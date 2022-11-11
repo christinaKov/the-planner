@@ -47,3 +47,24 @@ export const StyledTodoBtn = styled.button`
 	width: 4vw;
 	height: 4vw;
 `;
+
+export const ChangeTodoWrapper = styled.form`
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #0000007b;
+
+	input {
+		padding: 1rem 2rem;
+		width: 70%;
+		border: none;
+		border-top: none;
+		outline: none;
+		font-size: 1.5rem;
+	}
+`;
