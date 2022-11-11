@@ -1,5 +1,5 @@
 import Head from "next/head";
-import TodoList from "./TodoList";
+import TodoList from "../components/TodoList";
 
 // Styles
 import styled from "styled-components";
