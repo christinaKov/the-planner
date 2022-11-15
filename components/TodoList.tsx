@@ -41,12 +41,16 @@ export default function TodoList() {
 	useEffect(() => {
 		if (user)
 			(async () => {
-				console.log(user);
 				let { data: todos, error } = await supabase
 					.from("todos")
 					.select("*")
 					.eq("user_id", user?.id);
-				if (todos) setTodoList(todos);
+				if (todos)
+					setTodoList(
+						todos.sort((a, b) => {
+							return a.id - b.id;
+						})
+					);
 			})();
 	}, [user]);
 
@@ -82,16 +86,24 @@ export default function TodoList() {
 		setNewTitle(e.target.value);
 	};
 
-	// const changeTodo = (e: React.FormEvent<HTMLFormElement>) => {
-	// 	e.preventDefault();
-	// 	const newList = [...todoList];
-	// 	if (todoChanging) {
-	// 		newList[todoList.indexOf(todoChanging)].title = newTitle;
-	// 		setTodoList(newList);
-	// 		setNewTitle("");
-	// 		setIsChanging(!isChanging);
-	// 	}
-	// };
+	const changeTodo = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		const currentId = todoChanging?.id;
+
+		if (todoChanging) {
+			const { data: todos, error } = await supabase
+				.from("todos")
+				.update({ title: newTitle })
+				.eq("id", currentId);
+
+			const newList = [...todoList];
+			newList[todoList.indexOf(todoChanging)].title = newTitle;
+			setTodoList(newList);
+			setNewTitle("");
+			setIsChanging(!isChanging);
+		}
+	};
 
 	return (
 		<StyledWrapper>
@@ -106,14 +118,13 @@ export default function TodoList() {
 							todoProp={todo}
 							toggleChangeWrapper={toggleChangeWrapper}
 							setTodoChanging={setTodoChanging}
+							setNewTitle={setNewTitle}
 							key={todo.id}
 						/>
 					))}
 			</StyledTodoList>
 			{isChanging && (
-				<ChangeTodoWrapper
-					/*onSubmit={changeTodo}*/ onClick={toggleChangeWrapper}
-				>
+				<ChangeTodoWrapper onSubmit={changeTodo} onClick={toggleChangeWrapper}>
 					<input
 						onChange={changeInputHandler}
 						value={newTitle}

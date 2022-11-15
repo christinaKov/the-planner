@@ -6,7 +6,7 @@ import { Database } from "../types/supabase";
 type Todos = Database["public"]["Tables"]["todos"]["Row"];
 
 type TodoContextType = {
-	todoList: Todos[] | null;
+	todoList: Todos[];
 	setTodoList: React.Dispatch<React.SetStateAction<Todos[]>>;
 };
 
