@@ -2,7 +2,13 @@
 import React, { createContext, useContext, useState } from "react";
 
 // Import Types
-import { TodoItem, TodoContextType } from "../types/list. d";
+import { Database } from "../types/supabase";
+type Todos = Database["public"]["Tables"]["todos"]["Row"];
+
+type TodoContextType = {
+	todoList: Todos[] | null;
+	setTodoList: React.Dispatch<React.SetStateAction<Todos[]>>;
+};
 
 // Create Context
 const ListContext = createContext<TodoContextType>({} as TodoContextType);
@@ -13,7 +19,7 @@ interface props {
 
 export const StateContext = ({ children }: props) => {
 	// Add our data for the state
-	const [todoList, setTodoList] = useState<TodoItem[]>([]);
+	const [todoList, setTodoList] = useState<Todos[]>([]);
 
 	return (
 		<ListContext.Provider value={{ todoList, setTodoList }}>

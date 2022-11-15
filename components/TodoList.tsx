@@ -2,8 +2,23 @@
 import React, { useEffect, useRef, useState } from "react";
 
 // Import Context
-import { TodoItem } from "../types/list. d";
 import { useStateContext } from "../lib/context";
+
+// Import Types
+import { Database } from "../types/supabase";
+type Todo = Database["public"]["Tables"]["todos"]["Row"];
+
+// Supabase
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+let supabase: SupabaseClient<any, "public", any>;
+if (supabaseUrl && supabaseKey)
+	supabase = createClient(supabaseUrl, supabaseKey);
+
+// Supabase User
+import { useUser } from "@supabase/auth-helpers-react";
 
 //Styles
 import {
@@ -13,48 +28,50 @@ import {
 	ChangeTodoWrapper,
 } from "../styles/TodoList.styled";
 
-// Ids
-import { v4 as uuidv4 } from "uuid";
-
 // Components
 import TodoItemComponent from "./TodoItem";
 
 export default function TodoList() {
+	const user = useUser();
 	const { todoList, setTodoList } = useStateContext();
-	const [firstLoad, setFirstLoad] = useState(true);
 
 	const inputRef = useRef<HTMLInputElement>(null);
 
+	// Set TodoList
+	useEffect(() => {
+		if (user)
+			(async () => {
+				console.log(user);
+				let { data: todos, error } = await supabase
+					.from("todos")
+					.select("*")
+					.eq("user_id", user?.id);
+				if (todos) setTodoList(todos);
+			})();
+	}, [user]);
+
 	// Handle Changing
 	const [isChanging, setIsChanging] = useState(false);
-	const [todoChanging, setTodoChanging] = useState<TodoItem | undefined>(
-		undefined
-	);
+	const [todoChanging, setTodoChanging] = useState<Todo | undefined>(undefined);
 	const [newTitle, setNewTitle] = useState("");
-
-	useEffect(() => {
-		if (!firstLoad) localStorage.setItem("todos", JSON.stringify(todoList));
-	}, [todoList]);
-
-	useEffect(() => {
-		const currentTodos = localStorage.getItem("todos");
-		if (currentTodos) setTodoList(JSON.parse(currentTodos));
-		setFirstLoad(false);
-	}, []);
 
 	const [newTodo, setNewTodo] = useState("");
 	const newInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setNewTodo(e.target.value);
 	};
 
-	const addTodo = (e: React.FormEvent<HTMLFormElement>, newTodo: string) => {
+	const addTodo = async (
+		e: React.FormEvent<HTMLFormElement>,
+		newTodo: string
+	) => {
 		e.preventDefault();
-		setTodoList([
-			...todoList,
-			{ id: uuidv4(), title: newTodo, checked: false },
-		]);
-		setNewTodo("");
-		localStorage.setItem("todos", JSON.stringify(todoList));
+
+		if (newTodo) {
+			const { data, error } = await supabase
+				.from("todos")
+				.insert([{ title: newTodo, checked: false, user_id: user?.id }]);
+			setNewTodo("");
+		}
 	};
 
 	const toggleChangeWrapper = (e: React.MouseEvent<HTMLElement>) => {
@@ -65,16 +82,16 @@ export default function TodoList() {
 		setNewTitle(e.target.value);
 	};
 
-	const changeTodo = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		const newList = [...todoList];
-		if (todoChanging) {
-			newList[todoList.indexOf(todoChanging)].title = newTitle;
-			setTodoList(newList);
-			setNewTitle("");
-			setIsChanging(!isChanging);
-		}
-	};
+	// const changeTodo = (e: React.FormEvent<HTMLFormElement>) => {
+	// 	e.preventDefault();
+	// 	const newList = [...todoList];
+	// 	if (todoChanging) {
+	// 		newList[todoList.indexOf(todoChanging)].title = newTitle;
+	// 		setTodoList(newList);
+	// 		setNewTitle("");
+	// 		setIsChanging(!isChanging);
+	// 	}
+	// };
 
 	return (
 		<StyledWrapper>
@@ -84,7 +101,7 @@ export default function TodoList() {
 			</StyledInputWrapper>
 			<StyledTodoList>
 				{todoList &&
-					todoList.map((todo: TodoItem) => (
+					todoList.map((todo: Todo) => (
 						<TodoItemComponent
 							todoProp={todo}
 							toggleChangeWrapper={toggleChangeWrapper}
@@ -94,7 +111,9 @@ export default function TodoList() {
 					))}
 			</StyledTodoList>
 			{isChanging && (
-				<ChangeTodoWrapper onSubmit={changeTodo} onClick={toggleChangeWrapper}>
+				<ChangeTodoWrapper
+					/*onSubmit={changeTodo}*/ onClick={toggleChangeWrapper}
+				>
 					<input
 						onChange={changeInputHandler}
 						value={newTitle}
