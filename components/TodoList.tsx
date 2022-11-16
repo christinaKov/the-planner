@@ -33,32 +33,21 @@ import TodoItemComponent from "./TodoItem";
 
 export default function TodoList() {
 	const user = useUser();
-	const { todoList, setTodoList } = useStateContext();
+	const { todoList, fetchTodos } = useStateContext();
 
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	// Set TodoList
 	useEffect(() => {
-		if (user)
-			(async () => {
-				let { data: todos, error } = await supabase
-					.from("todos")
-					.select("*")
-					.eq("user_id", user?.id);
-				if (todos)
-					setTodoList(
-						todos.sort((a, b) => {
-							return a.id - b.id;
-						})
-					);
-			})();
+		fetchTodos(user?.id);
 	}, [user]);
 
-	// Handle Changing
+	// Changing Todo State
 	const [isChanging, setIsChanging] = useState(false);
 	const [todoChanging, setTodoChanging] = useState<Todo | undefined>(undefined);
 	const [newTitle, setNewTitle] = useState("");
 
+	// New Todo State
 	const [newTodo, setNewTodo] = useState("");
 	const newInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setNewTodo(e.target.value);
@@ -74,6 +63,7 @@ export default function TodoList() {
 			const { data, error } = await supabase
 				.from("todos")
 				.insert([{ title: newTodo, checked: false, user_id: user?.id }]);
+			fetchTodos(user?.id);
 			setNewTodo("");
 		}
 	};
@@ -88,18 +78,13 @@ export default function TodoList() {
 
 	const changeTodo = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-
 		const currentId = todoChanging?.id;
-
 		if (todoChanging) {
 			const { data: todos, error } = await supabase
 				.from("todos")
 				.update({ title: newTitle })
 				.eq("id", currentId);
-
-			const newList = [...todoList];
-			newList[todoList.indexOf(todoChanging)].title = newTitle;
-			setTodoList(newList);
+			fetchTodos(user?.id);
 			setNewTitle("");
 			setIsChanging(!isChanging);
 		}

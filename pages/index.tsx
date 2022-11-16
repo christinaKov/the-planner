@@ -20,7 +20,7 @@ export default function Home() {
 				<meta name="description" content="web planner" />
 			</Head>
 
-			<div className="container" style={{ padding: "50px 0 100px 0" }}>
+			<StyledMain>
 				{!session ? (
 					<Auth
 						supabaseClient={supabase}
@@ -28,11 +28,13 @@ export default function Home() {
 						theme="dark"
 					/>
 				) : (
-					<Account session={session} />
+					<div>
+						<nav>
+							<button onClick={() => supabase.auth.signOut()}>Log Out</button>
+						</nav>
+						<TodoList />
+					</div>
 				)}
-			</div>
-			<StyledMain>
-				<TodoList />
 			</StyledMain>
 
 			<footer></footer>

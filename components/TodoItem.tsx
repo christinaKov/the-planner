@@ -30,17 +30,20 @@ let supabase: SupabaseClient<any, "public", any>;
 if (supabaseUrl && supabaseKey)
 	supabase = createClient(supabaseUrl, supabaseKey);
 
+// Supabase User
+import { useUser } from "@supabase/auth-helpers-react";
+
 const TodoItem = (props: TodoItemProps) => {
+	const user = useUser();
 	const todo = props.todoProp;
-	const { todoList, setTodoList } = useStateContext();
+	const { fetchTodos } = useStateContext();
 
 	const removeTodo = async (todoToRemove: Todo) => {
 		const { data, error } = await supabase
 			.from("todos")
 			.delete()
 			.eq("id", todoToRemove.id);
-
-		setTodoList([...todoList].filter((todo) => todo !== todoToRemove));
+		fetchTodos(user?.id);
 	};
 
 	const toggleCheck = async (todoChecked: Todo) => {
@@ -48,10 +51,7 @@ const TodoItem = (props: TodoItemProps) => {
 			.from("todos")
 			.update({ checked: !todoChecked.checked })
 			.eq("id", todoChecked.id);
-
-		const newList = [...todoList];
-		newList[todoList.indexOf(todoChecked)].checked = true;
-		setTodoList(newList);
+		fetchTodos(user?.id);
 	};
 
 	return (
