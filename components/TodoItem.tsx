@@ -19,7 +19,7 @@ import {
 	faXmark,
 	faPencil,
 } from "@fortawesome/free-solid-svg-icons";
-import { StyledTodoBtn } from "../styles/TodoList.styled";
+import { StyledTodoBtn, StyledTodoBtns } from "../styles/TodoList.styled";
 
 // Supabase
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
@@ -55,18 +55,16 @@ const TodoItem = (props: TodoItemProps) => {
 	};
 
 	return (
-		<li className={todo.checked ? "checked" : ""}>
+		<li
+			className={todo.checked ? "checked" : ""}
+			onClick={(e) => {
+				props.toggleChangeWrapper(e);
+				props.setTodoChanging(todo);
+				props.setNewTitle(todo.title);
+			}}
+		>
 			<p>{todo.title}</p>
-			<div>
-				<StyledTodoBtn
-					onClick={(e) => {
-						props.toggleChangeWrapper(e);
-						props.setTodoChanging(todo);
-						props.setNewTitle(todo.title);
-					}}
-				>
-					<FontAwesomeIcon icon={faPencil} />
-				</StyledTodoBtn>
+			<StyledTodoBtns>
 				{!todo.checked && (
 					<StyledTodoBtn onClick={() => toggleCheck(todo)}>
 						<FontAwesomeIcon icon={faCheck} />
@@ -80,7 +78,7 @@ const TodoItem = (props: TodoItemProps) => {
 				<StyledTodoBtn onClick={() => removeTodo(todo)}>
 					<FontAwesomeIcon icon={faTrash} />
 				</StyledTodoBtn>
-			</div>
+			</StyledTodoBtns>
 		</li>
 	);
 };

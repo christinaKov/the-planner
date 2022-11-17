@@ -9,6 +9,13 @@ import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
 // React
 import { useState } from "react";
 
+// Components
+import Nav from "../components/Nav";
+import HeadComponent from "../components/Head";
+
+// Styles
+import { StyledMain } from "../styles/Main.styled";
+
 export default function App({
 	Component,
 	pageProps,
@@ -23,7 +30,11 @@ export default function App({
 				supabaseClient={supabaseClient}
 				initialSession={pageProps.initialSession}
 			>
-				<Component {...pageProps} />
+				<HeadComponent />
+				<StyledMain>
+					<Nav />
+					<Component {...pageProps} />
+				</StyledMain>
 			</SessionContextProvider>
 		</StateContext>
 	);

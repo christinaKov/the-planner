@@ -7,27 +7,34 @@ import {
 import { Database } from "../types/supabase";
 type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 
+// Styles
+import styled from "styled-components";
+import { StyledMainBtn } from "../styles/Main.styled";
+import { StyledMainInput } from "../styles/Main.styled";
+
 export default function Account({ session }: { session: Session }) {
 	const supabase = useSupabaseClient<Database>();
 	const user = useUser();
 	const [loading, setLoading] = useState(true);
+	const [email, setEmail] = useState<String | undefined>("");
 	const [username, setUsername] = useState<Profiles["username"]>(null);
 	const [website, setWebsite] = useState<Profiles["website"]>(null);
 	const [avatar_url, setAvatarUrl] = useState<Profiles["avatar_url"]>(null);
 
 	useEffect(() => {
-		getProfile();
-	}, [session]);
+		if (user) getProfile();
+		setEmail(user?.email);
+	}, [session, user]);
 
 	async function getProfile() {
 		try {
 			setLoading(true);
-			if (!user) throw new Error("No user");
+			//if (!user) throw new Error("No user");
 
 			let { data, error, status } = await supabase
 				.from("profiles")
 				.select(`username, website, avatar_url`)
-				.eq("id", user.id)
+				.eq("id", user?.id)
 				.single();
 
 			if (error && status !== 406) {
@@ -40,8 +47,8 @@ export default function Account({ session }: { session: Session }) {
 				setAvatarUrl(data.avatar_url);
 			}
 		} catch (error) {
-			alert("Error loading user data!");
-			console.log(error);
+			//alert("Error loading user data!");
+			//console.log(error);
 		} finally {
 			setLoading(false);
 		}
@@ -70,9 +77,9 @@ export default function Account({ session }: { session: Session }) {
 
 			let { error } = await supabase.from("profiles").upsert(updates);
 			if (error) throw error;
-			alert("Profile updated!");
+			//alert("Profile updated!");
 		} catch (error) {
-			alert("Error updating the data!");
+			//alert("Error updating the data!");
 			console.log(error);
 		} finally {
 			setLoading(false);
@@ -80,48 +87,64 @@ export default function Account({ session }: { session: Session }) {
 	}
 
 	return (
-		<div className="form-widget">
-			<div>
-				<label htmlFor="email">Email</label>
-				<input id="email" type="text" value={session.user.email} disabled />
-			</div>
-			<div>
-				<label htmlFor="username">Username</label>
-				<input
+		<StyledAccount className="form-widget">
+			<p>{email}</p>
+			<StyledInputWrapper>
+				<label htmlFor="username">Username:</label>
+				<StyledMainInput
 					id="username"
 					type="text"
 					value={username || ""}
 					onChange={(e) => setUsername(e.target.value)}
 				/>
-			</div>
-			<div>
-				<label htmlFor="website">Website</label>
-				<input
+			</StyledInputWrapper>
+			<StyledInputWrapper>
+				<label htmlFor="website">Your website:</label>
+				<StyledMainInput
 					id="website"
 					type="website"
 					value={website || ""}
 					onChange={(e) => setWebsite(e.target.value)}
 				/>
-			</div>
+			</StyledInputWrapper>
 
-			<div>
-				<button
+			<StyledAccountBtns>
+				<StyledMainBtn
 					className="button primary block"
 					onClick={() => updateProfile({ username, website, avatar_url })}
 					disabled={loading}
 				>
 					{loading ? "Loading ..." : "Update"}
-				</button>
-			</div>
-
-			<div>
-				<button
+				</StyledMainBtn>
+				<StyledMainBtn
 					className="button block"
 					onClick={() => supabase.auth.signOut()}
 				>
 					Sign Out
-				</button>
-			</div>
-		</div>
+				</StyledMainBtn>
+			</StyledAccountBtns>
+		</StyledAccount>
 	);
 }
+
+const StyledAccount = styled.div`
+	display: flex;
+	flex-direction: column;
+	width: 50vw;
+	gap: 2vw;
+`;
+
+const StyledInputWrapper = styled.div`
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+`;
+
+const StyledAccountBtns = styled.div`
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 1.5vw;
+`;

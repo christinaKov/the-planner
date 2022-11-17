@@ -27,6 +27,7 @@ import {
 	StyledTodoList,
 	ChangeTodoWrapper,
 } from "../styles/TodoList.styled";
+import { StyledMainInput } from "../styles/Main.styled";
 
 // Components
 import TodoItemComponent from "./TodoItem";
@@ -110,7 +111,7 @@ export default function TodoList() {
 			</StyledTodoList>
 			{isChanging && (
 				<ChangeTodoWrapper onSubmit={changeTodo} onClick={toggleChangeWrapper}>
-					<input
+					<StyledMainInput
 						onChange={changeInputHandler}
 						value={newTitle}
 						ref={inputRef}
