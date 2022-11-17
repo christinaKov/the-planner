@@ -55,15 +55,16 @@ const TodoItem = (props: TodoItemProps) => {
 	};
 
 	return (
-		<li
-			className={todo.checked ? "checked" : ""}
-			onClick={(e) => {
-				props.toggleChangeWrapper(e);
-				props.setTodoChanging(todo);
-				props.setNewTitle(todo.title);
-			}}
-		>
-			<p>{todo.title}</p>
+		<li className={todo.checked ? "checked" : ""}>
+			<p
+				onClick={(e) => {
+					props.toggleChangeWrapper(e);
+					props.setTodoChanging(todo);
+					props.setNewTitle(todo.title);
+				}}
+			>
+				{todo.title}
+			</p>
 			<StyledTodoBtns>
 				{!todo.checked && (
 					<StyledTodoBtn onClick={() => toggleCheck(todo)}>
