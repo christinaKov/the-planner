@@ -7,6 +7,8 @@ import {
 import { Database } from "../types/supabase";
 type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 
+import Link from "next/link";
+
 // Styles
 import styled from "styled-components";
 import { StyledMainBtn } from "../styles/Main.styled";
