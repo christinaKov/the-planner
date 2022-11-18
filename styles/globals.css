@@ -6,9 +6,16 @@
 
 html,
 body {
+	font-size: 1vw;
 	padding: 0;
 	margin: 0;
 	font-family: "Roboto Mono", monospace;
+}
+
+@media (max-width: 420px) {
+	html {
+		font-size: 14px;
+	}
 }
 
 a {

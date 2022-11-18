@@ -11,7 +11,7 @@ export const StyledMain = styled.div`
 `;
 
 export const StyledMainBtn = styled.button`
-	border-radius: 0.5vw;
+	border-radius: 0.5rem;
 	background: black;
 	color: #f1f1f1;
 	padding: 0.5rem 1rem;

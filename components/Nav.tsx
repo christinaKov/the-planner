@@ -44,4 +44,9 @@ const StyledNav = styled.nav`
 		gap: 2vw;
 		height: 100%;
 	}
+
+	@media (max-width: 420px) {
+		width: 80vw;
+		margin-top: 5vw;
+	}
 `;

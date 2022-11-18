@@ -133,7 +133,11 @@ const StyledAccount = styled.div`
 	display: flex;
 	flex-direction: column;
 	width: 50vw;
-	gap: 2vw;
+	gap: 2rem;
+	font-size: 1rem;
+	@media (max-width: 420px) {
+		width: 80vw;
+	}
 `;
 
 const StyledInputWrapper = styled.div`
@@ -141,6 +145,10 @@ const StyledInputWrapper = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+
+	input {
+		min-width: 70%;
+	}
 `;
 
 const StyledAccountBtns = styled.div`
@@ -148,5 +156,5 @@ const StyledAccountBtns = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
-	gap: 1.5vw;
+	gap: 1.5rem;
 `;

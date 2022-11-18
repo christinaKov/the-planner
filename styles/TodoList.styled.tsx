@@ -13,9 +13,14 @@ export const StyledWrapper = styled.div`
 	height: 75vh;
 	position: relative;
 	background: #f1f1f1;
-	border-radius: 0.5vw;
+	border-radius: 0.5rem;
 	overflow: auto;
 	border: 0.01vw black solid;
+
+	@media (max-width: 420px) {
+		width: 80vw;
+		height: 85vh;
+	}
 `;
 
 export const StyledInputWrapper = styled.form`
@@ -26,31 +31,52 @@ export const StyledInputWrapper = styled.form`
 	input {
 		flex: 1;
 		padding-left: 2rem;
+
+		@media (max-width: 420px) {
+			padding-left: 1rem;
+		}
 	}
 	button {
 		background: black;
 		color: #f1f1f1;
-		width: 13vw;
+		width: 13rem;
+
+		@media (max-width: 420px) {
+			width: 6rem;
+		}
 	}
 	input,
 	button {
-		height: 4.5vw;
+		height: 4.5rem;
 		border: none;
 		border-top: none;
 		outline: none;
-		font-size: 1.5rem;
+		font-size: 1rem;
+
+		@media (max-width: 420px) {
+			height: 3.5rem;
+		}
 	}
 `;
 
 export const StyledTodoList = styled.ul`
 	li {
 		cursor: pointer;
-		padding-left: 2vw;
+		font-size: 1.5rem;
+		padding-left: 2rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		border-bottom: 0.01vw black solid;
-		height: 4vw;
+		height: 4rem;
+		min-height: 4rem;
+		@media (max-width: 420px) {
+			padding-left: 1rem;
+			font-size: 1rem;
+			align-items: stretch;
+			height: 3rem;
+			min-height: 3rem;
+		}
 	}
 	li.checked {
 		text-decoration: line-through;
@@ -64,7 +90,11 @@ export const StyledTodoBtns = styled.div`
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	height: 100%;
-	width: 13vw;
+	width: 13rem;
+	@media (max-width: 420px) {
+		width: 6rem;
+		min-width: 6rem;
+	}
 `;
 
 export const StyledTodoBtn = styled.button`
