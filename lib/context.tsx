@@ -50,6 +50,9 @@ export const StateContext = ({ children }: props) => {
 							return a.id - b.id;
 						})
 						.reverse()
+						.sort((a, b) => {
+							return a.checked - b.checked;
+						})
 				);
 		}
 	};
