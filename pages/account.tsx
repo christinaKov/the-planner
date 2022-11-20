@@ -13,6 +13,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import { StyledMainBtn } from "../styles/Main.styled";
 import { StyledMainInput } from "../styles/Main.styled";
+import { useRouter } from "next/router";
 
 export default function Account({ session }: { session: Session }) {
 	const supabase = useSupabaseClient<Database>();
@@ -27,6 +28,8 @@ export default function Account({ session }: { session: Session }) {
 		if (user) getProfile();
 		setEmail(user?.email);
 	}, [session, user]);
+
+	const router = useRouter();
 
 	async function getProfile() {
 		try {
@@ -118,12 +121,11 @@ export default function Account({ session }: { session: Session }) {
 				>
 					{loading ? "Loading ..." : "Update"}
 				</StyledMainBtn>
-				<StyledMainBtn
-					className="button block"
-					onClick={() => supabase.auth.signOut()}
-				>
-					Sign Out
-				</StyledMainBtn>
+				<Link className="styled-btn" href="/">
+					<StyledMainBtn onClick={() => supabase.auth.signOut()}>
+						Sign Out
+					</StyledMainBtn>
+				</Link>
 			</StyledAccountBtns>
 		</StyledAccount>
 	);
@@ -157,4 +159,8 @@ const StyledAccountBtns = styled.div`
 	flex-direction: column;
 	align-items: stretch;
 	gap: 1.5rem;
+
+	button {
+		width: 100%;
+	}
 `;

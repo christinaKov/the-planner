@@ -13,12 +13,7 @@ import { useStateContext } from "../lib/context";
 
 // Styles
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faCheck,
-	faTrash,
-	faXmark,
-	faPencil,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { StyledTodoBtn, StyledTodoBtns } from "../styles/TodoList.styled";
 
 // Supabase
