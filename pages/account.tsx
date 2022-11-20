@@ -10,10 +10,12 @@ type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 import Link from "next/link";
 
 // Styles
-import styled from "styled-components";
 import { StyledMainBtn } from "../styles/Main.styled";
-import { StyledMainInput } from "../styles/Main.styled";
 import { useRouter } from "next/router";
+import { StyledAccount, StyledAccountBtns } from "../styles/Settings.styled";
+
+// Components
+import AccountSettings from "../components/AccountSettings";
 
 export default function Account({ session }: { session: Session }) {
 	const supabase = useSupabaseClient<Database>();
@@ -94,24 +96,12 @@ export default function Account({ session }: { session: Session }) {
 	return (
 		<StyledAccount className="form-widget">
 			<p>{email}</p>
-			<StyledInputWrapper>
-				<label htmlFor="username">Username:</label>
-				<StyledMainInput
-					id="username"
-					type="text"
-					value={username || ""}
-					onChange={(e) => setUsername(e.target.value)}
-				/>
-			</StyledInputWrapper>
-			<StyledInputWrapper>
-				<label htmlFor="website">Your website:</label>
-				<StyledMainInput
-					id="website"
-					type="website"
-					value={website || ""}
-					onChange={(e) => setWebsite(e.target.value)}
-				/>
-			</StyledInputWrapper>
+			<AccountSettings
+				username={username}
+				setUsername={setUsername}
+				website={website}
+				setWebsite={setWebsite}
+			/>
 
 			<StyledAccountBtns>
 				<StyledMainBtn
@@ -130,37 +120,3 @@ export default function Account({ session }: { session: Session }) {
 		</StyledAccount>
 	);
 }
-
-const StyledAccount = styled.div`
-	display: flex;
-	flex-direction: column;
-	width: 50vw;
-	gap: 2rem;
-	font-size: 1rem;
-	@media (max-width: 420px) {
-		width: 80vw;
-	}
-`;
-
-const StyledInputWrapper = styled.div`
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-
-	input {
-		min-width: 70%;
-	}
-`;
-
-const StyledAccountBtns = styled.div`
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-	gap: 1.5rem;
-
-	button {
-		width: 100%;
-	}
-`;
