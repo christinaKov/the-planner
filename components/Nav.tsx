@@ -1,6 +1,8 @@
 // Styles
 import styled from "styled-components";
 import { StyledMainBtn } from "../styles/Main.styled";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
 
 // Supabase
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
@@ -18,9 +20,9 @@ export default function Nav() {
 			</Link>
 			{session && (
 				<div>
-					<StyledMainBtn>
-						<Link href="/account">Change Profile</Link>
-					</StyledMainBtn>
+					<Link href="/account">
+						<FontAwesomeIcon className="settings-icon" icon={faGear} />
+					</Link>
 				</div>
 			)}
 		</StyledNav>
@@ -43,6 +45,11 @@ const StyledNav = styled.nav`
 		display: flex;
 		gap: 2vw;
 		height: 100%;
+	}
+
+	.settings-icon {
+		color: black;
+		font-size: 1.5rem;
 	}
 
 	@media (max-width: 420px) {
