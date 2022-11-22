@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState } from "react";
 // Import Types
 import { Database } from "../types/supabase";
 type Todos = Database["public"]["Tables"]["todos"]["Row"];
+type SortingTypes =
+	Database["public"]["Tables"]["profiles"]["Row"]["sorting_types"];
 
 type TodoContextType = {
 	todoList: Todos[];
@@ -26,9 +28,6 @@ let supabase: SupabaseClient<any, "public", any>;
 if (supabaseUrl && supabaseKey)
 	supabase = createClient(supabaseUrl, supabaseKey);
 
-// Supabase User
-import { useUser } from "@supabase/auth-helpers-react";
-
 export const StateContext = ({ children }: props) => {
 	let supabase: SupabaseClient<any, "public", any>;
 	if (supabaseUrl && supabaseKey)
@@ -38,8 +37,17 @@ export const StateContext = ({ children }: props) => {
 	const [todoList, setTodoList] = useState<Todos[]>([]);
 
 	const fetchTodos = async (user_id: string | undefined) => {
+		const sortingTypes = await supabase
+			.from("profiles")
+			.select("*")
+			.eq("id", user_id)
+			.select("sorting_types");
+
+		let currentTypes: SortingTypes;
+		if (sortingTypes.data) currentTypes = sortingTypes.data[0].sorting_types;
+
 		if (user_id) {
-			let { data: todos, error } = await supabase
+			let { data: todos } = await supabase
 				.from("todos")
 				.select("*")
 				.eq("user_id", user_id);
@@ -51,7 +59,9 @@ export const StateContext = ({ children }: props) => {
 						})
 						.reverse()
 						.sort((a, b) => {
-							return a.checked - b.checked;
+							if (currentTypes?.includes("by_checked")) {
+								return a.checked - b.checked;
+							} else return 0;
 						})
 				);
 		}

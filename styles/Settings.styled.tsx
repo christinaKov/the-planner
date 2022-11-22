@@ -33,3 +33,13 @@ export const StyledAccountBtns = styled.div`
 		width: 100%;
 	}
 `;
+
+export const StyledCheckboxWrapper = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+
+	input:checked {
+		accent-color: black;
+	}
+`;

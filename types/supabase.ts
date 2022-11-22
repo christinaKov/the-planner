@@ -17,6 +17,7 @@ export interface Database {
           full_name: string | null
           avatar_url: string | null
           website: string | null
+          sorting_types: string[] | null
         }
         Insert: {
           id: string
@@ -25,6 +26,7 @@ export interface Database {
           full_name?: string | null
           avatar_url?: string | null
           website?: string | null
+          sorting_types?: string[] | null
         }
         Update: {
           id?: string
@@ -33,6 +35,7 @@ export interface Database {
           full_name?: string | null
           avatar_url?: string | null
           website?: string | null
+          sorting_types?: string[] | null
         }
       }
       todos: {
